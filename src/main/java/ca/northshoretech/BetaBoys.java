@@ -8,10 +8,14 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
 public class BetaBoys {
+
+    private static final Logger logger = LoggerFactory.getLogger(BetaBoys.class);
 
     private final ShardManager shardManager;
     private static final Dotenv config = Dotenv.configure().load();
@@ -46,7 +50,8 @@ public class BetaBoys {
         try {
             BetaBoys bot = new BetaBoys();
         } catch (LoginException e) {
-            System.err.println("There was an error with the discord login token");
+            getLogger().error("There was an error with the discord login token");
+//            System.err.println("There was an error with the discord login token");
             throw new RuntimeException(e);
         }
     }
@@ -67,6 +72,15 @@ public class BetaBoys {
      */
     public static Dotenv getConfig() {
         return config;
+    }
+
+    /**
+     * Gets the static logger instance
+     *
+     * @return Logger for SLF4J
+     */
+    public static Logger getLogger() {
+        return logger;
     }
 
 }

@@ -4,6 +4,8 @@
 and administrative functionalities. Whether you're looking for fun interactions or a useful tool to help manage your
 server, **Beta Boys** has you covered!
 
+**This bot currently is guild specific, and may not work as intended for you.**
+
 ---
 
 ## Features
