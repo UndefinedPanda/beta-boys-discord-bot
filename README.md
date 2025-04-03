@@ -1,10 +1,9 @@
 # Beta Boys Discord Bot
 
 **Beta Boys** is a versatile Discord bot designed to engage and entertain your community with daily questions, riddles,
-and administrative functionalities. Whether you're looking for fun interactions or a useful tool to help manage your
-server, **Beta Boys** has you covered!
+and administrative functionalities.
 
-**This bot currently is guild specific, and may not work as intended for you.**
+**This bot currently is guild specific, and probably won't work as intended for you.**
 
 ---
 
@@ -23,12 +22,7 @@ server, **Beta Boys** has you covered!
 
 - **Ban, Kick, Mute**: Admins can use the bot for basic server management like banning or muting members.
 - **Clear Messages**: Admins can clear a specified number of messages from a channel.
-- **Custom Commands**: Admins can set up custom commands to streamline their server management process.
+- **Message Filter**: Admins can enable a message filter with a list of 'bad words'.
 
 ---
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/beta-boys-bot.git
