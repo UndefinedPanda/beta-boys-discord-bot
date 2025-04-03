@@ -1,6 +1,7 @@
 package ca.northshoretech;
 
 import ca.northshoretech.commands.DailyQuestionCommand;
+import ca.northshoretech.commands.DailyRiddleCommand;
 import ca.northshoretech.listeners.ReadyListener;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -39,6 +40,7 @@ public class BetaBoys {
         // Register event listeners
         shardManager.addEventListener(new ReadyListener());
         shardManager.addEventListener(new DailyQuestionCommand());
+        shardManager.addEventListener(new DailyRiddleCommand());
     }
 
     /**
