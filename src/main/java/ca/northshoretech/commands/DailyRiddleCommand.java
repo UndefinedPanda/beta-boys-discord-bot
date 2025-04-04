@@ -1,6 +1,7 @@
 package ca.northshoretech.commands;
 
 import ca.northshoretech.BetaBoys;
+import ca.northshoretech.Riddle;
 import ca.northshoretech.helpers.EmbedHelper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Role;
@@ -60,17 +61,6 @@ public class DailyRiddleCommand extends ListenerAdapter {
             EmbedHelper.sendErrorEmbed(event.getChannel(), "The riddle message must have a riddle and an answer");
             return;
         }
-        String riddle = riddleMessage[0];
-        String riddleAnswer = riddleMessage[1];
-
-        // create embed for the response
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Riddle of The Day!");
-        embedBuilder.setColor(Color.MAGENTA);
-        embedBuilder.setDescription(riddle);
-        embedBuilder.setTimestamp(Instant.now());
-        embedBuilder.setFooter("Powered By BetaBoys", "https://media.discordapp.net/attachments/1352001410069172387/1352464998886277161/image.jpg?ex=67dec56f&is=67dd73ef&hm=ef420dc5c3306558c8e6b4c732dccdda0356f1e8ccedaf3c6e5fdbaaa6314fb7&=&format=webp&width=960&height=960");
-
         // get the daily riddle channel, if it's not found send an error embed
         TextChannel dailyRiddleChannel = event.getGuild().getTextChannelById(dailyRiddleChannelId);
         if (dailyRiddleChannel == null) {
@@ -78,6 +68,19 @@ public class DailyRiddleCommand extends ListenerAdapter {
             EmbedHelper.sendErrorEmbed(event.getChannel(), "There was an error finding the daily riddle channel by its ID.");
             return;
         }
+
+        Riddle riddle = new Riddle(dailyRiddleChannel, riddleMessage[0], riddleMessage[1]);
+        BetaBoys.getRiddleManager().addRiddleToList(riddle);
+
+        // create embed for the response
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setTitle("Riddle of The Day!");
+        embedBuilder.setColor(Color.MAGENTA);
+        embedBuilder.setDescription(riddle.getRiddle());
+        embedBuilder.setTimestamp(Instant.now());
+        embedBuilder.setFooter("Powered By BetaBoys", "https://media.discordapp.net/attachments/1352001410069172387/1352464998886277161/image.jpg?ex=67dec56f&is=67dd73ef&hm=ef420dc5c3306558c8e6b4c732dccdda0356f1e8ccedaf3c6e5fdbaaa6314fb7&=&format=webp&width=960&height=960");
+
+
         // send message to the daily-riddle channel
         dailyRiddleChannel.sendMessage("@everyone").setEmbeds(embedBuilder.build()).queue();
     }

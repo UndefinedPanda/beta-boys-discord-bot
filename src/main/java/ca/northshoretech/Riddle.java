@@ -1,5 +1,10 @@
 package ca.northshoretech;
 
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class Riddle {
@@ -11,10 +16,40 @@ public class Riddle {
     private final String answer;
     private boolean isCompleted = false;
 
-    public Riddle(String riddle, String answer) {
+    private TextChannel channel;
+    private final Timer timer;
+    private TimerTask timerTask;
+
+    public Riddle(TextChannel channel, String riddle, String answer) {
+        this.channel = channel;
         this.uuid = UUID.randomUUID();
         this.riddle = riddle;
         this.answer = answer;
+        this.timer = new Timer();
+
+        initializeTimer();
+    }
+
+    /**
+     * initialize the timer task which will post the riddle answer at 11:59pm EST
+     */
+    private void initializeTimer() {
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                BetaBoys.getRiddleManager().sendRiddleAnswer(channel);
+                BetaBoys.getRiddleManager().removeRiddleFromList();
+                timer.cancel();
+            }
+        };
+
+        // Set the time for the timer to execute at 11:59PM
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY, 21);
+        date.set(Calendar.MINUTE, 36);
+        date.set(Calendar.SECOND, 0);
+
+        timer.schedule(timerTask, date.getTime());
     }
 
     /**

@@ -3,6 +3,8 @@ package ca.northshoretech;
 import ca.northshoretech.commands.DailyQuestionCommand;
 import ca.northshoretech.commands.DailyRiddleCommand;
 import ca.northshoretech.listeners.ReadyListener;
+import ca.northshoretech.listeners.RiddleDirectMessageListener;
+import ca.northshoretech.managers.RiddleManager;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -21,6 +23,8 @@ public class BetaBoys {
     private final ShardManager shardManager;
     private static final Dotenv config = Dotenv.configure().load();
 
+    private static final RiddleManager riddleManager = new RiddleManager();
+
     /**
      * Loads environment variables and builds the bot shard manager
      *
@@ -32,15 +36,23 @@ public class BetaBoys {
         // Check to make sure the token is valid from the dotenv file
         if (token == null) throw new LoginException("There was no token in the dot env file");
 
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES);
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token).enableIntents(
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.DIRECT_MESSAGES);
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setActivity(Activity.watching("Beta Boys Streamers"));
         shardManager = builder.build();
 
         // Register event listeners
         shardManager.addEventListener(new ReadyListener());
+        shardManager.addEventListener(new RiddleDirectMessageListener());
         shardManager.addEventListener(new DailyQuestionCommand());
         shardManager.addEventListener(new DailyRiddleCommand());
+    }
+
+    public static RiddleManager getRiddleManager() {
+        return riddleManager;
     }
 
     /**
