@@ -16,7 +16,7 @@ public class Riddle {
     private final String answer;
     private boolean isCompleted = false;
 
-    private TextChannel channel;
+    private final TextChannel channel;
     private final Timer timer;
     private TimerTask timerTask;
 
@@ -39,11 +39,12 @@ public class Riddle {
             public void run() {
                 BetaBoys.getRiddleManager().sendRiddleAnswer(channel);
                 BetaBoys.getRiddleManager().removeRiddleFromList();
+                BetaBoys.getRiddleManager().clearMemberAnsweredRiddlesList();
                 timer.cancel();
             }
         };
 
-        // Set the time for the timer to execute at 11:59PM
+        // TODO: Set the time for the timer to execute at 11:59PM
         Calendar date = Calendar.getInstance();
         date.set(Calendar.HOUR_OF_DAY, 21);
         date.set(Calendar.MINUTE, 36);

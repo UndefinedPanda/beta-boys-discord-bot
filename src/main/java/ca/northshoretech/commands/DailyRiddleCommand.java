@@ -42,6 +42,11 @@ public class DailyRiddleCommand extends ListenerAdapter {
         if (!event.getMessage().getContentRaw().startsWith(commandPrefix))
             return;
 
+        if (BetaBoys.getRiddleManager().getActiveRiddle() != null) {
+            EmbedHelper.sendWarningEmbed(event.getChannel(), "There is already a riddle created. There can only be one riddle created at a time");
+            return;
+        }
+
         // check if author is admin
         Role adminRole = event.getJDA().getRoleById(adminRoleId);
         if (adminRole == null) {

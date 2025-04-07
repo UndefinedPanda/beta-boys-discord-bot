@@ -6,11 +6,11 @@ import ca.northshoretech.listeners.ReadyListener;
 import ca.northshoretech.listeners.RiddleDirectMessageListener;
 import ca.northshoretech.managers.RiddleManager;
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +19,7 @@ import javax.security.auth.login.LoginException;
 public class BetaBoys {
 
     private static final Logger logger = LoggerFactory.getLogger(BetaBoys.class);
-
-    private final ShardManager shardManager;
     private static final Dotenv config = Dotenv.configure().load();
-
     private static final RiddleManager riddleManager = new RiddleManager();
 
     /**
@@ -30,25 +27,24 @@ public class BetaBoys {
      *
      * @throws LoginException
      */
-    public BetaBoys() throws LoginException {
+    private BetaBoys() throws LoginException, InterruptedException {
         String token = config.get("TOKEN");
 
         // Check to make sure the token is valid from the dotenv file
         if (token == null) throw new LoginException("There was no token in the dot env file");
 
-        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token).enableIntents(
-                GatewayIntent.MESSAGE_CONTENT,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.DIRECT_MESSAGES);
-        builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
-        builder.setActivity(Activity.watching("Beta Boys Streamers"));
-        shardManager = builder.build();
-
-        // Register event listeners
-        shardManager.addEventListener(new ReadyListener());
-        shardManager.addEventListener(new RiddleDirectMessageListener());
-        shardManager.addEventListener(new DailyQuestionCommand());
-        shardManager.addEventListener(new DailyRiddleCommand());
+        JDA jda = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.DIRECT_MESSAGES)
+                .setStatus(OnlineStatus.DO_NOT_DISTURB)
+                .setActivity(Activity.watching("Beta Boys Streamers"))
+                .addEventListeners(
+                        new ReadyListener(),
+                        new RiddleDirectMessageListener(),
+                        new DailyQuestionCommand(),
+                        new DailyRiddleCommand())
+                .build();
+        jda.awaitReady();
     }
 
     public static RiddleManager getRiddleManager() {
@@ -63,20 +59,11 @@ public class BetaBoys {
     public static void main(String[] args) {
         try {
             BetaBoys bot = new BetaBoys();
-        } catch (LoginException e) {
+        } catch (LoginException | InterruptedException e) {
             getLogger().error("There was an error with the discord login token");
 //            System.err.println("There was an error with the discord login token");
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Gets the created shard manager
-     *
-     * @return the ShardManager instance
-     */
-    public ShardManager getShardManager() {
-        return this.shardManager;
     }
 
     /**
