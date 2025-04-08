@@ -42,6 +42,7 @@ public class DailyRiddleCommand extends ListenerAdapter {
         if (!event.getMessage().getContentRaw().startsWith(commandPrefix))
             return;
 
+        // make sure there is only one active riddle
         if (BetaBoys.getRiddleManager().getActiveRiddle() != null) {
             EmbedHelper.sendWarningEmbed(event.getChannel(), "There is already a riddle created. There can only be one riddle created at a time");
             return;

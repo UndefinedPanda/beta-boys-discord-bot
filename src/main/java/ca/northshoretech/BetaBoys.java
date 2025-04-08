@@ -47,6 +47,11 @@ public class BetaBoys {
         jda.awaitReady();
     }
 
+    /**
+     * gets the static riddle manager for the bot
+     *
+     * @return returns the static riddle manager
+     */
     public static RiddleManager getRiddleManager() {
         return riddleManager;
     }
